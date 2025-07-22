@@ -1,4 +1,4 @@
-# 💰 Odoo Debt Management Module
+# Odoo Debt Management Module
 
 A comprehensive debt management system for Odoo 16 that provides complete tracking and management of debt obligations, payments, and financial reporting.
 
@@ -10,7 +10,7 @@ A comprehensive debt management system for Odoo 16 that provides complete tracki
 **Contact:** baominecraft12344@gmail.com  
 **Repository:** https://github.com/PhucBaogithub/odoo_debt_management  
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Installation](#️-installation)
@@ -21,34 +21,34 @@ A comprehensive debt management system for Odoo 16 that provides complete tracki
 - [License](#-license)
 - [Contact](#-contact)
 
-## 🚀 Features
+## Features
 
 ### Core Functionality
-- ✅ **Comprehensive Debt Tracking** - Track all types of debts (loans, credit cards, mortgages, etc.)
-- ✅ **Payment Management** - Record payments with automatic principal/interest breakdown
-- ✅ **Automated Status Tracking** - Automatic overdue detection and status updates
-- ✅ **Multi-Currency Support** - Handle debts in different currencies
-- ✅ **Priority System** - Set priorities to focus on critical debts
+-  **Comprehensive Debt Tracking** - Track all types of debts (loans, credit cards, mortgages, etc.)
+-  **Payment Management** - Record payments with automatic principal/interest breakdown
+-  **Automated Status Tracking** - Automatic overdue detection and status updates
+-  **Multi-Currency Support** - Handle debts in different currencies
+-  **Priority System** - Set priorities to focus on critical debts
 
 ### Dashboard & Analytics
-- ✅ **Interactive Dashboard** - Real-time statistics and charts
-- ✅ **Visual Charts** - Pie charts, bar charts, and line graphs
-- ✅ **Key Metrics** - Total debt, outstanding amounts, payment trends
-- ✅ **Quick Actions** - Easy access to create new debts and payments
+-  **Interactive Dashboard** - Real-time statistics and charts
+-  **Visual Charts** - Pie charts, bar charts, and line graphs
+-  **Key Metrics** - Total debt, outstanding amounts, payment trends
+-  **Quick Actions** - Easy access to create new debts and payments
 
 ### Reporting System
-- ✅ **PDF Reports** - Professional debt reports with customizable layouts
-- ✅ **Excel Export** - Detailed Excel reports with multiple worksheets
-- ✅ **Multiple Report Types** - Summary, Detailed, Payment History, Overdue, Category Analysis
+-  **PDF Reports** - Professional debt reports with customizable layouts
+-  **Excel Export** - Detailed Excel reports with multiple worksheets
+-  **Multiple Report Types** - Summary, Detailed, Payment History, Overdue, Category Analysis
 
 ### Advanced Features
-- ✅ **Category Management** - Organize debts by hierarchical categories
-- ✅ **Payment Scheduling** - Track payment frequencies and next payment dates
-- ✅ **Interest Rate Tracking** - Monitor interest rates and calculate costs
-- ✅ **Security & Access Control** - Role-based permissions
-- ✅ **Multi-Language Support** - English and Vietnamese translations
+-  **Category Management** - Organize debts by hierarchical categories
+-  **Payment Scheduling** - Track payment frequencies and next payment dates
+-  **Interest Rate Tracking** - Monitor interest rates and calculate costs
+-  **Security & Access Control** - Role-based permissions
+-  **Multi-Language Support** - English and Vietnamese translations
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 - Odoo 16.0
@@ -97,7 +97,7 @@ cp -r odoo_debt_management/addons/debt_management ./
    - Look for "Debt Management" in the main menu
    - Or use direct URL: `http://your-odoo-url/web#action=debt_management.action_debt_record`
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 5-Minute Setup
 
@@ -120,21 +120,21 @@ cp -r odoo_debt_management/addons/debt_management ./
    - Choose type and format
    - Generate and download
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Main Menu Structure
 ```
-📊 Debt Management
-├── 🏠 Dashboard
-├── 📋 Debt Records
+ Debt Management
+├──  Dashboard
+├──  Debt Records
 │   ├── All Debt Records
 │   ├── Active Debts
 │   ├── Overdue Debts
 │   └── High Priority
-├── 💳 Payments
-├── 📊 Analysis
-├── 📄 Reports
-└── ⚙️ Configuration
+├──  Payments
+├──  Analysis
+├──  Reports
+└──  Configuration
 ```
 
 ### Creating Debt Records
@@ -162,7 +162,7 @@ cp -r odoo_debt_management/addons/debt_management ./
 3. Choose PDF or Excel format
 4. Generate and download
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -187,7 +187,7 @@ http://your-odoo-url/web#action=debt_management.action_debt_record
 - **Email**: baominecraft12344@gmail.com
 - **GitHub Issues**: [Report Issues](https://github.com/PhucBaogithub/odoo_debt_management/issues)
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -197,11 +197,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the LGPL-3 License.
 
-## 📞 Contact
+## Contact
 
 **Phúc Bảo**
 - Email: baominecraft12344@gmail.com
@@ -210,9 +210,9 @@ This project is licensed under the LGPL-3 License.
 
 ---
 
-⭐ **If you find this project helpful, please give it a star!** ⭐
+ **If you find this project helpful, please give it a star!**
 
-## 🔄 Changelog
+## Changelog
 
 ### Version 16.0.1.0.0
 - Initial release
@@ -224,4 +224,4 @@ This project is licensed under the LGPL-3 License.
 
 ---
 
-*Made with ❤️ for the Odoo Community*
+*Made with love for the Odoo Community*
