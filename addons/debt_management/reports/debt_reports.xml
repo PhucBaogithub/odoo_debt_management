@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- PDF Report Action -->
+        <record id="action_debt_report_pdf" model="ir.actions.report">
+            <field name="name">Debt Report</field>
+            <field name="model">debt.report.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">debt_management.debt_report_template</field>
+            <field name="report_file">debt_management.debt_report_template</field>
+            <field name="binding_model_id" ref="model_debt_report_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- Individual Debt Record Report -->
+        <record id="action_debt_record_report" model="ir.actions.report">
+            <field name="name">Debt Record</field>
+            <field name="model">debt.record</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">debt_management.debt_record_template</field>
+            <field name="report_file">debt_management.debt_record_template</field>
+            <field name="binding_model_id" ref="model_debt_record"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- Payment Receipt Report -->
+        <record id="action_payment_receipt_report" model="ir.actions.report">
+            <field name="name">Payment Receipt</field>
+            <field name="model">debt.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">debt_management.payment_receipt_template</field>
+            <field name="report_file">debt_management.payment_receipt_template</field>
+            <field name="binding_model_id" ref="model_debt_payment"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

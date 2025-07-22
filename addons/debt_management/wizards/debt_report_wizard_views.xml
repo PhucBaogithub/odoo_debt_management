@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Debt Report Wizard Form View -->
+        <record id="view_debt_report_wizard_form" model="ir.ui.view">
+            <field name="name">debt.report.wizard.form</field>
+            <field name="model">debt.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Generate Debt Report">
+                    <sheet>
+                        <group>
+                            <group name="report_config" string="Report Configuration">
+                                <field name="report_type"/>
+                                <field name="output_format"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                            <group name="date_range" string="Date Range">
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="filters" string="Filters">
+                                <field name="state_filter"/>
+                                <field name="debt_category_ids" widget="many2many_tags"/>
+                                <field name="creditor_ids" widget="many2many_tags"/>
+                            </group>
+                            <group name="options" string="Options">
+                                <field name="include_payments"/>
+                                <field name="group_by"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_generate_report" string="Generate Report" 
+                                type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Debt Report Wizard Action -->
+        <record id="action_debt_report_wizard" model="ir.actions.act_window">
+            <field name="name">Generate Debt Report</field>
+            <field name="res_model">debt.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_debt_report_wizard_form"/>
+        </record>
+
+        <!-- Menu Item for Reports -->
+        <menuitem id="menu_debt_report_wizard"
+                  name="Generate Reports"
+                  parent="menu_debt_reports"
+                  action="action_debt_report_wizard"
+                  sequence="10"/>
+
+    </data>
+</odoo>

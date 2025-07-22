@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_debt_record_all,debt.record.all,model_debt_record,,1,1,1,1
+access_debt_record_user,debt.record.user,model_debt_record,group_debt_user,1,1,1,0
+access_debt_record_manager,debt.record.manager,model_debt_record,group_debt_manager,1,1,1,1
+access_debt_record_readonly,debt.record.readonly,model_debt_record,group_debt_readonly,1,0,0,0
+access_debt_payment_all,debt.payment.all,model_debt_payment,,1,1,1,1
+access_debt_payment_user,debt.payment.user,model_debt_payment,group_debt_user,1,1,1,0
+access_debt_payment_manager,debt.payment.manager,model_debt_payment,group_debt_manager,1,1,1,1
+access_debt_payment_readonly,debt.payment.readonly,model_debt_payment,group_debt_readonly,1,0,0,0
+access_debt_category_all,debt.category.all,model_debt_category,,1,1,1,1
+access_debt_category_user,debt.category.user,model_debt_category,group_debt_user,1,0,0,0
+access_debt_category_manager,debt.category.manager,model_debt_category,group_debt_manager,1,1,1,1
+access_debt_category_readonly,debt.category.readonly,model_debt_category,group_debt_readonly,1,0,0,0

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Main Debt Report Template -->
+        <template id="debt_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="wizard">
+                    <t t-set="debt_records" t-value="env['debt.record'].browse(wizard._context.get('debt_ids', []))"/>
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            
+                            <!-- Report Header -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h2 class="text-center">
+                                        <t t-if="wizard.report_type == 'summary'">Debt Summary Report</t>
+                                        <t t-if="wizard.report_type == 'detailed'">Detailed Debt Report</t>
+                                        <t t-if="wizard.report_type == 'payment_history'">Payment History Report</t>
+                                        <t t-if="wizard.report_type == 'overdue'">Overdue Debts Report</t>
+                                        <t t-if="wizard.report_type == 'category_analysis'">Category Analysis Report</t>
+                                    </h2>
+                                    <p class="text-center text-muted">
+                                        Generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Report Filters -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <strong>Report Criteria:</strong><br/>
+                                        <t t-if="wizard.date_from">Date From: <span t-esc="wizard.date_from"/></t>
+                                        <t t-if="wizard.date_to"> | Date To: <span t-esc="wizard.date_to"/></t>
+                                        <t t-if="wizard.state_filter != 'all'"> | Status: <span t-esc="wizard.state_filter.title()"/></t>
+                                        <br/>
+                                        Total Records: <span t-esc="len(debt_records)"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Summary Statistics -->
+                            <div class="row mt-3">
+                                <div class="col-4 text-center">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="text-primary">
+                                                <span t-esc="'{:,.2f}'.format(sum(debt_records.mapped('debt_amount')))"/>
+                                                <span t-esc="debt_records[0].currency_id.symbol if debt_records else '$'"/>
+                                            </h4>
+                                            <p class="text-muted">Total Debt</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="text-danger">
+                                                <span t-esc="'{:,.2f}'.format(sum(debt_records.mapped('outstanding_amount')))"/>
+                                                <span t-esc="debt_records[0].currency_id.symbol if debt_records else '$'"/>
+                                            </h4>
+                                            <p class="text-muted">Outstanding</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="text-success">
+                                                <span t-esc="'{:,.2f}'.format(sum(debt_records.mapped('paid_amount')))"/>
+                                                <span t-esc="debt_records[0].currency_id.symbol if debt_records else '$'"/>
+                                            </h4>
+                                            <p class="text-muted">Total Paid</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Report Content Based on Type -->
+                            <t t-if="wizard.report_type == 'summary'">
+                                <t t-call="debt_management.debt_summary_content"/>
+                            </t>
+                            <t t-if="wizard.report_type == 'detailed'">
+                                <t t-call="debt_management.debt_detailed_content"/>
+                            </t>
+                            <t t-if="wizard.report_type == 'overdue'">
+                                <t t-call="debt_management.debt_overdue_content"/>
+                            </t>
+
+                            <div class="oe_structure"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <!-- Summary Report Content -->
+        <template id="debt_summary_content">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>Summary by Category</h4>
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Count</th>
+                                <th>Total Debt</th>
+                                <th>Outstanding</th>
+                                <th>Paid Amount</th>
+                                <th>Avg Interest Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="categories" t-value="debt_records.mapped('debt_category_id')"/>
+                            <tr t-foreach="categories" t-as="category">
+                                <t t-set="category_debts" t-value="debt_records.filtered(lambda r: r.debt_category_id == category)"/>
+                                <td><span t-esc="category.name"/></td>
+                                <td><span t-esc="len(category_debts)"/></td>
+                                <td><span t-esc="'{:,.2f}'.format(sum(category_debts.mapped('debt_amount')))"/></td>
+                                <td><span t-esc="'{:,.2f}'.format(sum(category_debts.mapped('outstanding_amount')))"/></td>
+                                <td><span t-esc="'{:,.2f}'.format(sum(category_debts.mapped('paid_amount')))"/></td>
+                                <td>
+                                    <t t-set="avg_rate" t-value="sum(category_debts.mapped('interest_rate')) / len(category_debts) if category_debts else 0"/>
+                                    <span t-esc="'{:.2f}%'.format(avg_rate)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </template>
+
+        <!-- Detailed Report Content -->
+        <template id="debt_detailed_content">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>Detailed Debt Records</h4>
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Reference</th>
+                                <th>Creditor</th>
+                                <th>Category</th>
+                                <th>Debt Amount</th>
+                                <th>Outstanding</th>
+                                <th>Interest Rate</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="debt_records" t-as="debt">
+                                <td><span t-esc="debt.debt_reference"/></td>
+                                <td><span t-esc="debt.creditor_id.name"/></td>
+                                <td><span t-esc="debt.debt_category_id.name"/></td>
+                                <td><span t-esc="'{:,.2f}'.format(debt.debt_amount)"/></td>
+                                <td><span t-esc="'{:,.2f}'.format(debt.outstanding_amount)"/></td>
+                                <td><span t-esc="'{:.2f}%'.format(debt.interest_rate)"/></td>
+                                <td><span t-esc="debt.due_date"/></td>
+                                <td>
+                                    <span t-esc="debt.state.title()" 
+                                          t-attf-class="badge badge-#{debt.state == 'overdue' and 'danger' or debt.state == 'paid' and 'success' or 'primary'}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </template>
+
+        <!-- Overdue Report Content -->
+        <template id="debt_overdue_content">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>Overdue Debts</h4>
+                    <t t-set="overdue_debts" t-value="debt_records.filtered(lambda r: r.state == 'overdue')"/>
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Reference</th>
+                                <th>Creditor</th>
+                                <th>Outstanding Amount</th>
+                                <th>Due Date</th>
+                                <th>Days Overdue</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="overdue_debts" t-as="debt" class="table-danger">
+                                <td><span t-esc="debt.debt_reference"/></td>
+                                <td><span t-esc="debt.creditor_id.name"/></td>
+                                <td><span t-esc="'{:,.2f}'.format(debt.outstanding_amount)"/></td>
+                                <td><span t-esc="debt.due_date"/></td>
+                                <td><strong><span t-esc="debt.days_overdue"/></strong></td>
+                                <td>
+                                    <t t-set="priority_map" t-value="{'0': 'Low', '1': 'Normal', '2': 'High', '3': 'Very High'}"/>
+                                    <span t-esc="priority_map.get(debt.priority, 'Normal')"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </template>
+
+        <!-- Individual Debt Record Template -->
+        <template id="debt_record_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="debt">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h2>Debt Record</h2>
+                                    <h3 t-esc="debt.debt_reference"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <h5>Debt Information</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Creditor:</strong></td>
+                                            <td t-esc="debt.creditor_id.name"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Category:</strong></td>
+                                            <td t-esc="debt.debt_category_id.name"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Type:</strong></td>
+                                            <td t-esc="debt.debt_type.title()"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Status:</strong></td>
+                                            <td t-esc="debt.state.title()"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <h5>Financial Details</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Original Amount:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(debt.debt_amount, debt.currency_id.symbol)"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Outstanding:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(debt.outstanding_amount, debt.currency_id.symbol)"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Paid Amount:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(debt.paid_amount, debt.currency_id.symbol)"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Interest Rate:</strong></td>
+                                            <td t-esc="'{:.2f}%'.format(debt.interest_rate)"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>Important Dates</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Start Date:</strong></td>
+                                            <td t-esc="debt.start_date"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Due Date:</strong></td>
+                                            <td t-esc="debt.due_date"/>
+                                        </tr>
+                                        <tr t-if="debt.next_payment_date">
+                                            <td><strong>Next Payment:</strong></td>
+                                            <td t-esc="debt.next_payment_date"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div t-if="debt.description" class="row mt-4">
+                                <div class="col-12">
+                                    <h5>Description</h5>
+                                    <p t-esc="debt.description"/>
+                                </div>
+                            </div>
+
+                            <div class="oe_structure"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <!-- Payment Receipt Template -->
+        <template id="payment_receipt_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="payment">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h2>Payment Receipt</h2>
+                                    <h3 t-esc="payment.payment_reference"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <h5>Payment Information</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Debt Reference:</strong></td>
+                                            <td t-esc="payment.debt_record_id.debt_reference"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Creditor:</strong></td>
+                                            <td t-esc="payment.creditor_id.name"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Payment Date:</strong></td>
+                                            <td t-esc="payment.payment_date"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Payment Method:</strong></td>
+                                            <td t-esc="payment.payment_method.title()"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <h5>Amount Breakdown</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Total Amount:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(payment.amount, payment.currency_id.symbol)"/>
+                                        </tr>
+                                        <tr t-if="payment.principal_amount">
+                                            <td><strong>Principal:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(payment.principal_amount, payment.currency_id.symbol)"/>
+                                        </tr>
+                                        <tr t-if="payment.interest_amount">
+                                            <td><strong>Interest:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(payment.interest_amount, payment.currency_id.symbol)"/>
+                                        </tr>
+                                        <tr t-if="payment.fee_amount">
+                                            <td><strong>Fees:</strong></td>
+                                            <td t-esc="'{:,.2f} {}'.format(payment.fee_amount, payment.currency_id.symbol)"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div t-if="payment.reference_number" class="row mt-4">
+                                <div class="col-12">
+                                    <p><strong>Reference Number:</strong> <span t-esc="payment.reference_number"/></p>
+                                </div>
+                            </div>
+
+                            <div t-if="payment.description" class="row mt-4">
+                                <div class="col-12">
+                                    <h5>Notes</h5>
+                                    <p t-esc="payment.description"/>
+                                </div>
+                            </div>
+
+                            <div class="oe_structure"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

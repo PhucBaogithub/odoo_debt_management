@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences -->
+        <record id="seq_debt_record" model="ir.sequence">
+            <field name="name">Debt Record</field>
+            <field name="code">debt.record</field>
+            <field name="prefix">DEBT</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_debt_payment" model="ir.sequence">
+            <field name="name">Debt Payment</field>
+            <field name="code">debt.payment</field>
+            <field name="prefix">PAY</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Default Debt Categories -->
+        <record id="debt_category_business_loan" model="debt.category">
+            <field name="name">Business Loan</field>
+            <field name="code">BL</field>
+            <field name="description">Loans for business operations and expansion</field>
+            <field name="sequence">10</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="debt_category_mortgage" model="debt.category">
+            <field name="name">Mortgage</field>
+            <field name="code">MG</field>
+            <field name="description">Real estate mortgages and property loans</field>
+            <field name="sequence">20</field>
+            <field name="color">2</field>
+        </record>
+
+        <record id="debt_category_credit_card" model="debt.category">
+            <field name="name">Credit Card</field>
+            <field name="code">CC</field>
+            <field name="description">Credit card debts and revolving credit</field>
+            <field name="sequence">30</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="debt_category_equipment_loan" model="debt.category">
+            <field name="name">Equipment Loan</field>
+            <field name="code">EL</field>
+            <field name="description">Loans for equipment and machinery purchase</field>
+            <field name="sequence">40</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="debt_category_line_of_credit" model="debt.category">
+            <field name="name">Line of Credit</field>
+            <field name="code">LC</field>
+            <field name="description">Business lines of credit and overdrafts</field>
+            <field name="sequence">50</field>
+            <field name="color">5</field>
+        </record>
+
+        <record id="debt_category_bond" model="debt.category">
+            <field name="name">Bond</field>
+            <field name="code">BD</field>
+            <field name="description">Corporate bonds and debentures</field>
+            <field name="sequence">60</field>
+            <field name="color">6</field>
+        </record>
+
+        <record id="debt_category_personal_loan" model="debt.category">
+            <field name="name">Personal Loan</field>
+            <field name="code">PL</field>
+            <field name="description">Personal loans and consumer credit</field>
+            <field name="sequence">70</field>
+            <field name="color">7</field>
+        </record>
+
+        <record id="debt_category_other" model="debt.category">
+            <field name="name">Other</field>
+            <field name="code">OT</field>
+            <field name="description">Other types of debt not categorized above</field>
+            <field name="sequence">100</field>
+            <field name="color">8</field>
+        </record>
+
+        <!-- Cron Job for Overdue Status Update -->
+        <record id="cron_update_overdue_debts" model="ir.cron">
+            <field name="name">Update Overdue Debt Status</field>
+            <field name="model_id" ref="model_debt_record"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_update_overdue_status()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+        </record>
+
+        <!-- Test Action for Direct Access -->
+        <record id="action_debt_test" model="ir.actions.act_window">
+            <field name="name">Debt Management - Test Access</field>
+            <field name="res_model">debt.record</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🎉 Debt Management Module is Working!
+                </p>
+                <p>
+                    You have successfully accessed the Debt Management module.
+                    <br/>This confirms the module is installed and working correctly.
+                </p>
+                <p>
+                    <strong>Next Steps:</strong>
+                    <br/>1. Create your first debt record by clicking "Create"
+                    <br/>2. Set up debt categories in Configuration
+                    <br/>3. Start recording payments
+                </p>
+                <p>
+                    <strong>Available Features:</strong>
+                    <br/>• Debt Records Management
+                    <br/>• Payment Tracking
+                    <br/>• Reports and Analysis
+                    <br/>• Multi-language Support
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

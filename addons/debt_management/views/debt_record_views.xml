@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Debt Record Form View -->
+        <record id="view_debt_record_form" model="ir.ui.view">
+            <field name="name">debt.record.form</field>
+            <field name="model">debt.record</field>
+            <field name="arch" type="xml">
+                <form string="Debt Record">
+                    <header>
+                        <button name="action_activate" string="Activate" type="object" 
+                                class="oe_highlight" states="draft"/>
+                        <button name="action_mark_paid" string="Mark as Paid" type="object" 
+                                class="oe_highlight" states="active,overdue" 
+                                confirm="Are you sure you want to mark this debt as paid?"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                states="draft,active" 
+                                confirm="Are you sure you want to cancel this debt record?"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,paid"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_payments" type="object" 
+                                    class="oe_stat_button" icon="fa-money">
+                                <field name="payment_count" widget="statinfo" string="Payments"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="debt_reference" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="basic_info" string="Basic Information">
+                                <field name="creditor_id" options="{'no_create': True}"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="debt_category_id"/>
+                                <field name="debt_type"/>
+                                <field name="priority" widget="priority"/>
+                            </group>
+                            <group name="financial_info" string="Financial Information">
+                                <field name="debt_amount"/>
+                                <field name="outstanding_amount" readonly="1"/>
+                                <field name="paid_amount" readonly="1"/>
+                                <field name="currency_id" groups="base.group_multi_currency"/>
+                                <field name="interest_rate"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="dates" string="Dates">
+                                <field name="start_date"/>
+                                <field name="due_date"/>
+                                <field name="next_payment_date" readonly="1"/>
+                                <field name="payment_frequency"/>
+                            </group>
+                            <group name="status_info" string="Status Information">
+                                <field name="is_overdue" readonly="1"/>
+                                <field name="days_overdue" readonly="1" attrs="{'invisible': [('is_overdue', '=', False)]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description" placeholder="Additional notes about this debt..."/>
+                            </page>
+                            <page string="Payments" name="payments">
+                                <field name="payment_ids" readonly="1">
+                                    <tree>
+                                        <field name="payment_reference"/>
+                                        <field name="payment_date"/>
+                                        <field name="amount"/>
+                                        <field name="payment_type"/>
+                                        <field name="payment_method"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Debt Record Tree View -->
+        <record id="view_debt_record_tree" model="ir.ui.view">
+            <field name="name">debt.record.tree</field>
+            <field name="model">debt.record</field>
+            <field name="arch" type="xml">
+                <tree string="Debt Records" decoration-danger="is_overdue" decoration-success="state=='paid'">
+                    <field name="debt_reference"/>
+                    <field name="creditor_id"/>
+                    <field name="debt_category_id"/>
+                    <field name="debt_amount"/>
+                    <field name="outstanding_amount"/>
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="start_date"/>
+                    <field name="due_date"/>
+                    <field name="days_overdue" optional="hide"/>
+                    <field name="is_overdue" invisible="1"/>
+                    <field name="state"/>
+                    <field name="priority" widget="priority" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Debt Record Kanban View -->
+        <record id="view_debt_record_kanban" model="ir.ui.view">
+            <field name="name">debt.record.kanban</field>
+            <field name="model">debt.record</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="debt_reference"/>
+                    <field name="creditor_id"/>
+                    <field name="debt_amount"/>
+                    <field name="outstanding_amount"/>
+                    <field name="currency_id"/>
+                    <field name="due_date"/>
+                    <field name="is_overdue"/>
+                    <field name="state"/>
+                    <field name="priority"/>
+                    <field name="debt_category_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.is_overdue.raw_value ? 'oe_kanban_color_2' : ''}">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="debt_reference"/>
+                                            </strong>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <field name="priority" widget="priority"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div><strong><field name="creditor_id"/></strong></div>
+                                        <div><field name="debt_category_id"/></div>
+                                        <div>Amount: <field name="debt_amount"/> <field name="currency_id"/></div>
+                                        <div>Outstanding: <field name="outstanding_amount"/> <field name="currency_id"/></div>
+                                        <div>Due: <field name="due_date"/></div>
+                                        <div t-if="record.is_overdue.raw_value" class="text-danger">
+                                            <i class="fa fa-exclamation-triangle"/> Overdue
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Debt Record Search View -->
+        <record id="view_debt_record_search" model="ir.ui.view">
+            <field name="name">debt.record.search</field>
+            <field name="model">debt.record</field>
+            <field name="arch" type="xml">
+                <search string="Search Debt Records">
+                    <field name="debt_reference"/>
+                    <field name="creditor_id"/>
+                    <field name="debt_category_id"/>
+                    <field name="description"/>
+                    <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+                    <filter string="Overdue" name="overdue" domain="[('state', '=', 'overdue')]"/>
+                    <filter string="Paid" name="paid" domain="[('state', '=', 'paid')]"/>
+                    <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['2', '3'])]"/>
+                    <separator/>
+                    <filter string="Due This Month" name="due_this_month" 
+                            domain="[('due_date', '&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                     ('due_date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Due This Week" name="due_this_week"
+                            domain="[('due_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                     ('due_date', '&lt;', (context_today() + relativedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Creditor" name="group_creditor" context="{'group_by': 'creditor_id'}"/>
+                        <filter string="Category" name="group_category" context="{'group_by': 'debt_category_id'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+                        <filter string="Due Date" name="group_due_date" context="{'group_by': 'due_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Debt Record Action -->
+        <record id="action_debt_record" model="ir.actions.act_window">
+            <field name="name">Debt Records</field>
+            <field name="res_model">debt.record</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="view_debt_record_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first debt record!
+                </p>
+                <p>
+                    Track and manage your debt obligations with comprehensive
+                    debt records including creditor information, payment schedules,
+                    and automated status tracking.
+                </p>
+            </field>
+        </record>
+
+        <!-- Debt Payment Form View -->
+        <record id="view_debt_payment_form" model="ir.ui.view">
+            <field name="name">debt.payment.form</field>
+            <field name="model">debt.payment</field>
+            <field name="arch" type="xml">
+                <form string="Debt Payment">
+                    <header>
+                        <button name="action_confirm" string="Confirm Payment" type="object"
+                                class="oe_highlight" states="draft"/>
+                        <button name="action_cancel" string="Cancel" type="object"
+                                states="draft,confirmed"
+                                confirm="Are you sure you want to cancel this payment?"/>
+                        <button name="action_set_to_draft" string="Set to Draft" type="object"
+                                states="cancelled"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="payment_reference" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="payment_info" string="Payment Information">
+                                <field name="debt_record_id" options="{'no_create': True}"/>
+                                <field name="creditor_id" readonly="1"/>
+                                <field name="amount"/>
+                                <field name="currency_id" readonly="1"/>
+                                <field name="payment_date"/>
+                                <field name="payment_method"/>
+                            </group>
+                            <group name="payment_details" string="Payment Details">
+                                <field name="payment_type"/>
+                                <field name="principal_amount"/>
+                                <field name="interest_amount"/>
+                                <field name="fee_amount"/>
+                                <field name="reference_number"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="debt_info" string="Debt Information">
+                                <field name="remaining_debt" readonly="1"/>
+                                <field name="is_final_payment" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description" placeholder="Additional notes about this payment..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Debt Payment Tree View -->
+        <record id="view_debt_payment_tree" model="ir.ui.view">
+            <field name="name">debt.payment.tree</field>
+            <field name="model">debt.payment</field>
+            <field name="arch" type="xml">
+                <tree string="Debt Payments" decoration-success="state=='confirmed'" decoration-muted="state=='cancelled'">
+                    <field name="payment_reference"/>
+                    <field name="debt_record_id"/>
+                    <field name="creditor_id"/>
+                    <field name="payment_date"/>
+                    <field name="amount"/>
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="payment_type"/>
+                    <field name="payment_method"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Debt Payment Action -->
+        <record id="action_debt_payment" model="ir.actions.act_window">
+            <field name="name">Debt Payments</field>
+            <field name="res_model">debt.payment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Record your first debt payment!
+                </p>
+                <p>
+                    Track all payments made towards your debts with detailed
+                    payment records including principal, interest, and fee breakdowns.
+                </p>
+            </field>
+        </record>
+
+        <!-- Debt Category Form View -->
+        <record id="view_debt_category_form" model="ir.ui.view">
+            <field name="name">debt.category.form</field>
+            <field name="model">debt.category</field>
+            <field name="arch" type="xml">
+                <form string="Debt Category">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_debts" type="object"
+                                    class="oe_stat_button" icon="fa-list">
+                                <field name="debt_count" widget="statinfo" string="Debts"/>
+                            </button>
+                        </div>
+                        <group>
+                            <group name="basic_info" string="Basic Information">
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="parent_id"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group name="statistics" string="Statistics">
+                                <field name="total_debt_amount" readonly="1"/>
+                                <field name="outstanding_debt_amount" readonly="1"/>
+                                <field name="currency_id" readonly="1"/>
+                                <field name="color" widget="color"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description" placeholder="Description of this debt category..."/>
+                            </page>
+                            <page string="Child Categories" name="children" attrs="{'invisible': [('child_ids', '=', [])]}">
+                                <field name="child_ids" readonly="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="debt_count"/>
+                                        <field name="total_debt_amount"/>
+                                        <field name="active"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Debt Category Tree View -->
+        <record id="view_debt_category_tree" model="ir.ui.view">
+            <field name="name">debt.category.tree</field>
+            <field name="model">debt.category</field>
+            <field name="arch" type="xml">
+                <tree string="Debt Categories">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="debt_count"/>
+                    <field name="total_debt_amount"/>
+                    <field name="outstanding_debt_amount"/>
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Debt Category Action -->
+        <record id="action_debt_category" model="ir.actions.act_window">
+            <field name="name">Debt Categories</field>
+            <field name="res_model">debt.category</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first debt category!
+                </p>
+                <p>
+                    Organize your debts by creating categories such as
+                    Business Loans, Mortgages, Credit Cards, etc.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

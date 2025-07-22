@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Main Menu -->
+        <menuitem id="menu_debt_management_root"
+                  name="Debt Management"
+                  sequence="15"/>
+
+        <!-- Alternative menu in Settings for easy access -->
+        <menuitem id="menu_debt_management_settings"
+                  name="Debt Management"
+                  parent="base.menu_administration"
+                  sequence="100"
+                  action="action_debt_record"/>
+
+        <!-- Dashboard Menu -->
+        <menuitem id="menu_debt_dashboard"
+                  name="Dashboard"
+                  parent="menu_debt_management_root"
+                  action="action_debt_dashboard"
+                  sequence="10"/>
+
+        <!-- Debt Records Submenu -->
+        <menuitem id="menu_debt_records"
+                  name="Debt Records"
+                  parent="menu_debt_management_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_debt_record_all"
+                  name="All Debt Records"
+                  parent="menu_debt_records"
+                  action="action_debt_record"
+                  sequence="10"/>
+
+        <menuitem id="menu_debt_record_active"
+                  name="Active Debts"
+                  parent="menu_debt_records"
+                  action="action_debt_record"
+                  sequence="20"/>
+
+        <menuitem id="menu_debt_record_overdue"
+                  name="Overdue Debts"
+                  parent="menu_debt_records"
+                  action="action_overdue_debts"
+                  sequence="30"/>
+
+        <menuitem id="menu_debt_record_due_month"
+                  name="Due This Month"
+                  parent="menu_debt_records"
+                  action="action_due_this_month"
+                  sequence="40"/>
+
+        <menuitem id="menu_debt_record_high_priority"
+                  name="High Priority"
+                  parent="menu_debt_records"
+                  action="action_high_priority_debts"
+                  sequence="50"/>
+
+        <!-- Payments Submenu -->
+        <menuitem id="menu_debt_payments"
+                  name="Payments"
+                  parent="menu_debt_management_root"
+                  sequence="30"/>
+
+        <menuitem id="menu_debt_payment_all"
+                  name="All Payments"
+                  parent="menu_debt_payments"
+                  action="action_debt_payment"
+                  sequence="10"/>
+
+        <!-- Analysis Submenu -->
+        <menuitem id="menu_debt_analysis"
+                  name="Analysis"
+                  parent="menu_debt_management_root"
+                  sequence="40"/>
+
+        <menuitem id="menu_debt_analysis_debt"
+                  name="Debt Analysis"
+                  parent="menu_debt_analysis"
+                  action="action_debt_analysis"
+                  sequence="10"/>
+
+        <menuitem id="menu_debt_analysis_payment"
+                  name="Payment Analysis"
+                  parent="menu_debt_analysis"
+                  action="action_payment_analysis"
+                  sequence="20"/>
+
+        <!-- Configuration Submenu -->
+        <menuitem id="menu_debt_configuration"
+                  name="Configuration"
+                  parent="menu_debt_management_root"
+                  sequence="90"/>
+
+        <menuitem id="menu_debt_categories"
+                  name="Debt Categories"
+                  parent="menu_debt_configuration"
+                  action="action_debt_category"
+                  sequence="10"/>
+
+        <!-- Reports Submenu -->
+        <menuitem id="menu_debt_reports"
+                  name="Reports"
+                  parent="menu_debt_management_root"
+                  sequence="80"/>
+
+        <!-- Context Actions for Active Debts -->
+        <record id="action_debt_record_active_context" model="ir.actions.act_window">
+            <field name="name">Active Debts</field>
+            <field name="res_model">debt.record</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="domain">[('state', '=', 'active')]</field>
+            <field name="context">{'search_default_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No active debts found!
+                </p>
+                <p>
+                    Active debts are those that are currently being paid and are not overdue.
+                </p>
+            </field>
+        </record>
+
+        <!-- Update menu item to use context action -->
+        <record id="menu_debt_record_active" model="ir.ui.menu">
+            <field name="action" ref="action_debt_record_active_context"/>
+        </record>
+
+        <!-- Server Actions for Quick Access -->
+        <record id="action_create_debt_record" model="ir.actions.server">
+            <field name="name">Create New Debt Record</field>
+            <field name="model_id" ref="model_debt_record"/>
+            <field name="binding_model_id" ref="model_debt_record"/>
+            <field name="state">code</field>
+            <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'New Debt Record',
+    'res_model': 'debt.record',
+    'view_mode': 'form',
+    'target': 'current',
+    'context': {'default_state': 'draft'}
+}
+            </field>
+        </record>
+
+        <record id="action_create_payment" model="ir.actions.server">
+            <field name="name">Record Payment</field>
+            <field name="model_id" ref="model_debt_payment"/>
+            <field name="binding_model_id" ref="model_debt_payment"/>
+            <field name="state">code</field>
+            <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'New Payment',
+    'res_model': 'debt.payment',
+    'view_mode': 'form',
+    'target': 'current',
+    'context': {'default_state': 'draft'}
+}
+            </field>
+        </record>
+
+        <!-- Direct Access Action -->
+        <record id="action_debt_management_direct" model="ir.actions.act_window">
+            <field name="name">Debt Management - Direct Access</field>
+            <field name="res_model">debt.record</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Welcome to Debt Management!
+                </p>
+                <p>
+                    You have successfully accessed the Debt Management module.
+                    <br/>Start by creating your first debt record.
+                </p>
+                <p>
+                    <strong>Quick Navigation:</strong>
+                    <br/>• Use the search bar to find "debt" or "payment"
+                    <br/>• Check the main menu for "Debt Management"
+                    <br/>• Look in Settings menu for alternative access
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu item in Apps menu -->
+        <menuitem id="menu_debt_apps"
+                  name="Debt Management"
+                  parent="base.menu_custom"
+                  action="action_debt_management_direct"
+                  sequence="10"/>
+
+    </data>
+</odoo>
