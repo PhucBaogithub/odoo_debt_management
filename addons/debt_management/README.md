@@ -1,4 +1,4 @@
-# 💰 Debt Management Module for Odoo 16
+# Debt Management Module for Odoo 16
 
 A comprehensive debt management system for Odoo 16 that provides complete tracking and management of debt obligations, payments, and financial reporting.
 
@@ -7,7 +7,7 @@ A comprehensive debt management system for Odoo 16 that provides complete tracki
 **Repository:** https://github.com/PhucBaogithub/odoo_debt_management
 **Version:** 16.0.1.0.0
 
-## 🚀 Features
+## Features
 
 ### Core Functionality
 - **Comprehensive Debt Tracking** - Track all types of debts including loans, credit cards, mortgages, lines of credit, bonds, and more
@@ -44,13 +44,13 @@ A comprehensive debt management system for Odoo 16 that provides complete tracki
 - **Vietnamese** - Complete Vietnamese translation
 - **Extensible** - Easy to add more languages
 
-## 📋 Requirements
+## Requirements
 
 - Odoo 16.0
 - Python 3.8+
 - xlsxwriter (for Excel reports)
 
-## 🛠️ Installation
+## Installation
 
 ### Method 1: Clone from GitHub (Recommended)
 
@@ -96,7 +96,7 @@ A comprehensive debt management system for Odoo 16 that provides complete tracki
    - Look for "Debt Management" in the main menu
    - Or use direct URL: `http://your-odoo-url/web#action=debt_management.action_debt_record`
 
-## 🎯 Usage Guide
+## Usage Guide
 
 ### Getting Started
 
@@ -170,7 +170,7 @@ The dashboard provides:
    - Click "Generate Report"
    - Download the generated file
 
-## 🏗️ Module Structure
+## Module Structure
 
 ```
 debt_management/
@@ -217,13 +217,13 @@ debt_management/
     └── debt_report_wizard_views.xml
 ```
 
-## 🔐 Security Groups
+## Security Groups
 
 - **Debt User** - Can create and manage debt records and payments
 - **Debt Manager** - Full access including configuration and deletion
 - **Debt Read Only** - View-only access to all debt information
 
-## 🧪 Testing
+## Testing
 
 The module includes comprehensive tests:
 
@@ -237,7 +237,7 @@ Or use the validation script:
 python3 validate_module.py
 ```
 
-## 📊 Database Models
+## Database Models
 
 ### debt.record
 Main debt tracking model with fields for creditor, amounts, dates, status, etc.
@@ -248,7 +248,7 @@ Payment tracking model linked to debt records with principal/interest breakdown.
 ### debt.category
 Hierarchical categorization system for organizing debts.
 
-## 🎨 User Interface
+## User Interface
 
 - **Form Views** - User-friendly forms for data entry
 - **List Views** - Sortable and filterable list displays
@@ -256,7 +256,7 @@ Hierarchical categorization system for organizing debts.
 - **Dashboard** - Interactive charts and statistics
 - **Search Views** - Advanced filtering and grouping options
 
-## 🔧 Customization
+## Customization
 
 The module is designed to be easily customizable:
 
@@ -266,7 +266,7 @@ The module is designed to be easily customizable:
 - **Workflow modifications** - Customize state transitions
 - **New translations** - Add support for additional languages
 
-## 📝 Changelog
+## Changelog
 
 ### Version 16.0.1.0.0
 - Initial release
@@ -276,7 +276,7 @@ The module is designed to be easily customizable:
 - Multi-language support (EN/VI)
 - Comprehensive test suite
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -299,17 +299,17 @@ For support, bug reports, or feature requests:
 2. **GitHub Issues:** https://github.com/PhucBaogithub/odoo_debt_management/issues
 3. **Documentation:** Check this README and module help texts
 
-## 🔄 Updates and Contributions
+## Updates and Contributions
 
 - **Latest Version:** Check GitHub for updates
 - **Contributions:** Pull requests welcome
 - **Bug Reports:** Use GitHub Issues
 
-## 📄 License
+## License
 
 This module is licensed under LGPL-3.
 
-## 👥 Credits
+## Credits
 
 **Developer:** Phúc Bảo
 **Email:** baominecraft12344@gmail.com
